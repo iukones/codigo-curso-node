@@ -19,15 +19,15 @@ let placeSchema = new mongoose.Schema({
 });
 
 // Guardar info de imagenes en la BD
-placeSchema.methods.updateAvatar = function(path) {
+placeSchema.methods.updateImage = function(path, imageType) {
   // Primero subir la imagen
   // Guardar el lugar
   return uploader(path)
-    .then(secure_url => this.saveAvatarUrl(secure_url));
+    .then(secure_url => this.saveImageUrl(secure_url, imageType));
 }
 
-placeSchema.methods.saveAvatarUrl = function(secureUrl) {
-  this.avatarImage = secureUrl;
+placeSchema.methods.saveImageUrl = function(secureUrl, imageType) {
+  this[imageType + 'Image'] = secureUrl;
   return this.save();
 }
 

@@ -86,19 +86,27 @@ function multerMiddleware(){
   ]);
 }
 
-// subir imagen a cloudinary
+// subir imagen a cloudinary y guardar en la BD
 function saveImage(req, res){
   if (req.place) {
-    if(req.files && req.files.avatar){
-      const path = req.files.avatar[0].path;
-      uploader(path).then(result => {
-        console.log(result);
-        res.json(req.place);
-      }).catch( err => {
-        console.log( err );
-        res.json( err );
-      })
-    }
+    const files = ['avatar', 'cover'];
+    const promises = [];
+
+    files.forEach(imageType => {
+      if(req.files && req.files[imageType]){
+        const path = req.files[imageType][0].path;
+        promises.push(req.place.updateImage(path, imageType));
+      }
+    })
+
+    Promise.all(promises).then(result => {
+      console.log(result);
+      res.json(req.place);
+    }).catch( err => {
+      console.log( err );
+      res.json( err );
+    });
+
   }else {
     res.status(422).json({
       error: req.error || 'Could not save place'
