@@ -9,8 +9,8 @@ router.route('/')
   .post(placesController.create)
 
 router.route('/:id')
-  .get(placesController.show)
-  .put(placesController.update)
-  .delete(placesController.destroy)
+  .get(placesController.find, placesController.show)
+  .put(placesController.find, placesController.update)
+  .delete(placesController.find, placesController.destroy)
 
   module.exports = router;
