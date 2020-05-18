@@ -1,6 +1,7 @@
 
 const Place = require('../models/Places');
-
+const upload = require('../config/upload');
+const uploader = require('../models/Uploader');
 
 // agregamos el middleware find
 function find(req, res, next) {
@@ -24,19 +25,20 @@ function index(req, res) {
     });
 }
 
-function create(req, res) {
+function create(req, res, next) {
   //Crear lugares
-  Place.create({  
+  console.log(req.body);
+  Place.create({
     title: req.body.title,
     description: req.body.description,
     acceptsCreditCard: req.body.acceptsCreditCard,
     openHour: req.body.openHour,
     closeHour: req.body.closeHour
   }).then( doc => {
-    res.json(doc)
+    req.place = doc;
+    next();
   }).catch( err => {
-    console.log(err);
-    res.json(err);
+    next(err);
   });
 }
 
@@ -76,11 +78,41 @@ function destroy(req, res) {
   });
 }
 
+// middleware multer para subir imagenes
+function multerMiddleware(){
+  return upload.fields([
+    {name: 'avatar', maxCount: 1},
+    {name: 'cover', maxCount: 1}
+  ]);
+}
+
+// subir imagen a cloudinary
+function saveImage(req, res){
+  if (req.place) {
+    if(req.files && req.files.avatar){
+      const path = req.files.avatar[0].path;
+      uploader(path).then(result => {
+        console.log(result);
+        res.json(req.place);
+      }).catch( err => {
+        console.log( err );
+        res.json( err );
+      })
+    }
+  }else {
+    res.status(422).json({
+      error: req.error || 'Could not save place'
+    });
+  }
+}
+
 module.exports = {
   index,
   create,
   show,
   update,
   destroy,
-  find
+  find,
+  multerMiddleware,
+  saveImage
 }
