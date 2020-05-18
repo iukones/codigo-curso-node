@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose');
+const mongooseBcrypt = require('mongoose-bcrypt');
 
 let userSchema = new mongoose.Schema({
   email: {
@@ -13,6 +14,8 @@ let userSchema = new mongoose.Schema({
     default: false
   }
 });
+
+userSchema.plugin(mongooseBcrypt);
 
 const User = mongoose.model('User', userSchema);
 
