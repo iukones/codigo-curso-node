@@ -1,12 +1,18 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 const uploader = require('./Uploader');
+const slugify = require('../plugins/slugify');
 
 let placeSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true
   },
+  slug: {
+    type: String,
+    unique: true
+  },
+  address: String,
   description: String,
   acceptsCreditCard: {
     type: Boolean,
@@ -31,7 +37,35 @@ placeSchema.methods.saveImageUrl = function(secureUrl, imageType) {
   return this.save();
 }
 
+// Aqui tengo un bug con el 'pre' del slug hay que corregir no genera pretty url
+placeSchema.pre('save', function(next){
+  if(this.slug) return next();
+  generateSlugAndContinue.call(this, 0, next);
+});
+// Aqui tengo un bug con el 'pre' del slug hay que corregir
+
+placeSchema.statics.validateSlugCount = function(slug){
+  return Place.count({slug: slug}).then(count => {
+    if(count > 0) return false;
+    return true;
+  })
+}
+
+
 placeSchema.plugin(mongoosePaginate);
+
+function generateSlugAndContinue(count, next){
+  this.slug = slugify(this.title);
+  if(count != 0)
+      this.slug = this.slug + "-"+count;
+    
+  Place.validateSlugCount(this.slug).then(isValid => {
+    if(!isValid)
+      return generateSlugAndContinue.call(this, count+1, next);
+
+    next();
+  })
+}
 
 let Place = mongoose.model('Place', placeSchema);
 
