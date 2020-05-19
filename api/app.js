@@ -6,7 +6,9 @@ var logger = require('morgan');
 
 
 
+
 const places = require('./routes/places');
+const users = require('./routes/users');
 
 const db = require('./config/database');
 
@@ -30,6 +32,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/places', places);
+app.use('/users', users);
 
 // no es requerido, por ahora.
 /* app.use('/', indexRouter);
