@@ -47,7 +47,7 @@ placeSchema.pre('save', function(next){
   if(this.slug) return next();
   generateSlugAndContinue.call(this, 0, next);
 });
-// Aqui tengo un bug con el 'pre' del slug hay que corregir
+// fin del bug 'pre' del slug
 
 placeSchema.statics.validateSlugCount = function(slug){
   return Place.count({slug: slug}).then(count => {

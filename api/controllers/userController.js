@@ -1,6 +1,7 @@
 
 const User = require('../models/User');
 
+
 const buildParams = require('./helpers').buildParams;
 
 const validParams = [
@@ -24,6 +25,18 @@ function create(req, res, next) {
   })
 }
 
+function myPlaces(req, res){
+  User.findOne({'_id': req.user.id}).then(user => {
+    console.log(user.places);
+    user.places.then(places => {
+      res.json(places);
+    })
+  }).catch( err => {
+    console.log(err);
+    res.json(err);
+  })
+}
+
 // funcion para remover todos los usuarios de prueba creados hasta el momento
 /* function destroyAll(req, res) {
   User.remove({}).then(r => res.json({}));
@@ -31,5 +44,6 @@ function create(req, res, next) {
 
 
 module.exports = {
-  create
+  create,
+  myPlaces
 }
