@@ -9,6 +9,7 @@ var logger = require('morgan');
 
 const places = require('./routes/places');
 const users = require('./routes/users');
+const sessions = require('./routes/sessions');
 
 const db = require('./config/database');
 
@@ -33,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/places', places);
 app.use('/users', users);
-
+app.use('/sessions', sessions);
 // no es requerido, por ahora.
 /* app.use('/', indexRouter);
 app.use('/users', usersRouter); */
