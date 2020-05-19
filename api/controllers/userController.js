@@ -24,6 +24,11 @@ function create(req, res, next) {
   })
 }
 
+// funcion para remover todos los usuarios de prueba creados hasta el momento
+/* function destroyAll(req, res) {
+  User.remove({}).then(r => res.json({}));
+} */
+
 
 module.exports = {
   create

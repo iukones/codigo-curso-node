@@ -10,6 +10,7 @@ router.route('/')
     userController.create,
     sessionController.generateToken,
     sessionController.sendToken
-  );
+  )
+  // .get(userController.destroyAll); //eliminar usuarios de la BD
 
 module.exports = router;
