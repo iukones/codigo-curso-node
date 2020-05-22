@@ -25,6 +25,7 @@ function create(req, res, next) {
   })
 }
 
+//bug en la funcion myPlaces virtuals
 function myPlaces(req, res){
   User.findOne({'_id': req.user.id}).then(user => {
     console.log(user.places);
